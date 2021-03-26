@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Google.Protobuf;
 
 namespace Client
 {
@@ -39,7 +40,20 @@ namespace Client
             var textBox = this.Find<TextBox>("text");
             if (!string.IsNullOrEmpty(textBox.Text))
             {
-                var req = WebRequest.Create("http://127.0.0.1:5000?text="+textBox.Text);
+                var req = WebRequest.Create("http://127.0.0.1:5000");
+                req.Method = "POST";
+                using (var rStream =  req.GetRequestStream())
+                {
+                    var mes = new audio
+                    {
+                        Content = ByteString.Empty,
+                        Text = textBox.Text,
+                        Date = DateTime.Now.ToString()
+                    };
+                    mes.WriteTo(rStream);
+
+                }
+
                 var resp = req.GetResponse();
                 var stream = resp.GetResponseStream();
 

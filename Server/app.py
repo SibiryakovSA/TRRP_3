@@ -5,13 +5,17 @@ from flask import Flask, request
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=["post", "get"])
 def server():
-    text = request.args.get('text', "")
+    text = TextToSpeech.DeserializeText(request.data)
+    print(request.data)
     if text != "":
         tts = TextToSpeech()
         tts.ConvertTextToSpeech(text)
-        return tts.SerializeWithProto()
+        res = tts.SerializeWithProto()
+        print("Введенный текст: " + text)
+        print("Возвращена строка байтов длинной " + str(len(res)) + " байт")
+        return res
     return 'Текст не найден'
 
 

@@ -37,3 +37,9 @@ class TextToSpeech:
         audio.date = str(datetime.now())
 
         return audio.SerializeToString()
+
+    @staticmethod
+    def DeserializeText(data):
+        audio = message_pb2.audio()
+        audio.ParseFromString(data)
+        return audio.text
